@@ -29,7 +29,6 @@ class Dev(Configuration):
   # SECURITY WARNING: don't run with debug turned on in production!
   DEBUG = values.BooleanValue(True)
 
-  # ALLOWED_HOSTS = ['*']
   ALLOWED_HOSTS = values.ListValue(['localhost', '0.0.0.0', '.codio.io'])
   
   X_FRAME_OPTIONS = 'ALLOW-FROM ' + os.environ.get('CODIO_HOSTNAME') + '-8000.codio.io'
@@ -100,6 +99,7 @@ class Dev(Configuration):
       'blog',
       'crispy_forms',
       'crispy_bootstrap5',
+      'debug_toolbar',
   ]
 
   MIDDLEWARE = [
@@ -110,7 +110,10 @@ class Dev(Configuration):
       'django.contrib.auth.middleware.AuthenticationMiddleware',
       'django.contrib.messages.middleware.MessageMiddleware',
       # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+      'debug_toolbar.middleware.DebugToolbarMiddleware',
   ]
+
+  INTERNAL_IPS = ['192.168.10.226']
 
   ROOT_URLCONF = 'blango.urls'
 
@@ -135,13 +138,6 @@ class Dev(Configuration):
 
   # Database
   # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-#   DATABASES = {
-#       'default': {
-#           'ENGINE': 'django.db.backends.sqlite3',
-#           'NAME': BASE_DIR / 'db.sqlite3',
-#       }
-#   }
   DATABASES = values.DatabaseURLValue(f"sqlite:///{BASE_DIR}/db.sqlite3")
 
   # Password validation
