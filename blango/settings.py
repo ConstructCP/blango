@@ -97,6 +97,7 @@ class Dev(Configuration):
       'django.contrib.messages',
       'django.contrib.sites',
       'django.contrib.staticfiles',
+      'rest_framework',
       'blango_auth',
       'blog',
       'crispy_forms',
