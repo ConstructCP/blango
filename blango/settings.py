@@ -104,13 +104,14 @@ class Dev(Configuration):
       'crispy_forms',
       'crispy_bootstrap5',
       'debug_toolbar',
-      "allauth", 
-      "allauth.account", 
-      "allauth.socialaccount", 
-      "allauth.socialaccount.providers.google",
+      'allauth', 
+      'allauth.account', 
+      'allauth.socialaccount', 
+      'allauth.socialaccount.providers.google',
+      'drf_yasg',
   ]
 
-  AUTH_USER_MODEL = "blango_auth.User"
+  AUTH_USER_MODEL = 'blango_auth.User'
 
   MIDDLEWARE = [
       'django.middleware.security.SecurityMiddleware',
@@ -148,7 +149,7 @@ class Dev(Configuration):
 
   # Database
   # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-  DATABASES = values.DatabaseURLValue(f"sqlite:///{BASE_DIR}/db.sqlite3")
+  DATABASES = values.DatabaseURLValue(f'sqlite:///{BASE_DIR}/db.sqlite3')
 
   # Password validation
   # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -193,24 +194,31 @@ class Dev(Configuration):
 
   DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-  EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+  EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
   ACCOUNT_ACTIVATION_DAYS = 7
 
   SITE_ID = 1
   ACCOUNT_USER_MODEL_USERNAME_FIELD = None
   ACCOUNT_EMAIL_REQUIRED = True
   ACCOUNT_USERNAME_REQUIRED = False
-  ACCOUNT_AUTHENTICATION_METHOD = "email"
+  ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
   REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-      "rest_framework.authentication.BasicAuthentication",
-      "rest_framework.authentication.SessionAuthentication",
-      "rest_framework.authentication.TokenAuthentication",
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+      'rest_framework.authentication.BasicAuthentication',
+      'rest_framework.authentication.SessionAuthentication',
+      'rest_framework.authentication.TokenAuthentication',
     ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
+  }
+
+  SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+      'Token': {'type': 'apiKey', 'name': 'Authorization', 'in': 'header'},
+      'Basic': {'type': 'basic'},
+    }
   }
 
 
