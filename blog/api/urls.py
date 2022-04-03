@@ -30,6 +30,11 @@ router.register("posts", PostViewSet)
 
 urlpatterns += [
   path('', include(router.urls)),
+  path(
+    'posts/by-time/<str:period_name>',
+    PostViewSet.as_view({'get': 'list'}),
+    name='posts-by-time'
+  ),
   path('auth/', include('rest_framework.urls')),
   path('token-auth/', drf_auth_views.obtain_auth_token),
   re_path(

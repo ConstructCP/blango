@@ -5,6 +5,10 @@ from rest_framework.exceptions import PermissionDenied
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers, vary_on_cookie
+from django.db.models import Q
+from django.utils import timezone
+from django.http import Http404
+from datetime import timedelta
 
 from blog.models import Post, Tag
 from blog.api.serializers import PostSerializer, UserSerializer, PostDetailSerializer, TagSerializer
@@ -51,7 +55,34 @@ class PostViewSet(viewsets.ModelViewSet):
       return PostSerializer
     return PostDetailSerializer
 
+  def get_queryset(self):
+    if self.request.user.is_anonymous:
+      return self.queryset.filter(published_at__lte=timezone.now())
+
+    if not self.request.user.is_staff:
+      return self.queryset
+
+    queryset = self.queryset.filter(
+      Q(published_at__lte=timezone.now()) | Q(author=self.request.user)
+    )
+
+    time_period_name = self.kwargs.get('period_name')
+
+    if not time_period_name:
+      return queryset
+
+    if time_period_name == 'new':
+      return queryset.filter(published_at__gte=timezone.now() - timedelta(hours=1))
+    elif time_period_name == 'today':
+      return queryset.filter(published_at__date=timezone.now().date())
+    elif time_period_name == 'week':
+      return queryset.filter(published_at__gte=timezone.now() - timedelta(days=7))
+    else:
+      raise Http404(f'Time period {time_period_name} is not valid. Should be new, today or week.')
+
   @method_decorator(cache_page(120))
+  @method_decorator(vary_on_headers('Authorization'))
+  @method_decorator(vary_on_cookie)
   def list(self, *args, **kwargs):
     return super(PostViewSet, self).list(*args, **kwargs)
 
