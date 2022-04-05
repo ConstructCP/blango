@@ -111,6 +111,7 @@ class Dev(Configuration):
       'allauth.socialaccount.providers.google',
       'drf_yasg',
       'django_filters',
+      'versatileimagefield',
   ]
 
   AUTH_USER_MODEL = 'blango_auth.User'
@@ -246,6 +247,9 @@ class Dev(Configuration):
       'Basic': {'type': 'basic'},
     }
   }
+
+  MEDIA_ROOT = BASE_DIR / 'media'
+  MEDIA_URL = '/media/'
 
 
 class Prod(Dev):
